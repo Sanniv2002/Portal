@@ -4,12 +4,12 @@ import type * as http from "http";
 
 const app = express();
 
-// Define the alias to list of ports mappings
+// Dummy mappings to test things out
 const aliasPortMapping: { [key: string]: number[] } = {
   qwerty: [32769, 32770, 32771],
   qwerty2: [32772, 32773, 32774],
   abcd: [32775],
-  // Add more mappings as needed
+  // These mappings will come from Store
 };
 
 // Track the current index for each alias
@@ -20,7 +20,7 @@ for (const alias in aliasPortMapping) {
   currentIndex[alias] = 0;
 }
 
-// Middleware to handle proxying based on alias with round-robin
+// Round Robin based middleware
 app.use("/:alias", (req: Request, res: Response, next: NextFunction) => {
   const alias = req.params.alias;
   const ports = aliasPortMapping[alias];
@@ -57,7 +57,6 @@ app.use("/:alias", (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Proxy server is running on port ${PORT}`);
